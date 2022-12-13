@@ -1,6 +1,13 @@
 New-Alias -Name k -Value kubectl
 
 function kcurrent() {
+    <#
+    .SYNOPSIS
+
+    kcurrent
+    display current kubernets namespaces
+    #>
+
     $myJson = k config view --minify -o json | ConvertFrom-Json
     $namespace = $myJson.contexts.context.namespace
     $cluster = $myJson.contexts.context.cluster
@@ -9,15 +16,34 @@ function kcurrent() {
 }
 
 function kmini() {
+    <#
+    .SYNOPSIS
+
+    kmini
+    switch to mimikube context
+    #>
     k config use-context minikube
 }
 
 function kns([string]$ns) {
+    <#
+    .SYNOPSIS
+
+    kns
+    switch kubernets namespaces
+    #>
+
     k config set-context --current --namespace=$ns
     Write-Output "Switched to namespace $ns"
 }
 
 function kgpa() {
+    <#
+    .SYNOPSIS
+
+    kgpa
+    kubectl get pod in all namespaces
+    #>
     k get pod --all-namespaces
 }
 
@@ -25,22 +51,43 @@ function kga() {
     k get all
 }
 
+function kge() {
+    <#
+    .SYNOPSIS
+
+    kge
+    kubectl get event
+    #>
+    k get event $args
+}
+
 function kgp() {
+    <#
+    .SYNOPSIS
+
+    kgp
+    kubectl get pod
+    #>
     k get pod $args
 }
 
 function kd([string]$resource) {
+    <#
+    .SYNOPSIS
+
+    kd
+    describe kubernets resources
+    #>
     k describe $resource $args
 }
 
-function kdp([string]$pod) {
-    if (!$pod.StartsWith("pod/")) {
-        $pod = "pod/$pod"
-    }
-    k delete $pod
-}
-
 function ktp([string]$pod) {
+    <#
+    .SYNOPSIS
+
+    ktp
+    display pod's cpu and memory usage
+    #>
     if ($pod.StartsWith("pod/")) {
         $pod = $pod.replace("pod/", "")
     }
@@ -49,6 +96,12 @@ function ktp([string]$pod) {
 }
 
 function kstop_deployment([string]$deployment) {
+    <#
+    .SYNOPSIS
+
+    kstop_deployment
+    stop deployment by increase deployment replica to 0
+    #>
     if (!$deployment.StartsWith("deployment.apps")) {
         $deployment = "deployment/$deployment"
     }
@@ -57,6 +110,13 @@ function kstop_deployment([string]$deployment) {
 }
 
 function kstart_deployment([string]$deployment) {
+    <#
+    .SYNOPSIS
+
+    kstart_deployment
+    start deployment by increase deployment replica to 1
+    #>
+    
     if (!$deployment.StartsWith("deployment.apps")) {
         $deployment = "deployment/$deployment"
     }
@@ -64,6 +124,13 @@ function kstart_deployment([string]$deployment) {
     k scale $deployment --replicas=1
 }
 
-function ksh([string]$resource) {
+function kssh([string]$resource) {
+    <#
+    .SYNOPSIS
+
+    kssh
+    ssh login to kubernets containers with bash
+    #>
+
     k exec --stdin --tty $resource -- /bin/bash
 }
