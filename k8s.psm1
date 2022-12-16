@@ -71,6 +71,43 @@ function kgp() {
     k get pod $args
 }
 
+function kl() {
+    <#
+    .SYNOPSIS
+
+    kl
+    kubectl logs pod/app
+    #>
+    k logs $args
+}
+
+function klf() {
+    <#
+    .SYNOPSIS
+
+    klf
+    kubectl logs pod/app and follow
+    #>
+    k logs $args -f
+}
+
+function kap() {
+    <#
+    .SYNOPSIS
+
+    kap
+    kubectl apply
+
+    .EXAMPLE
+    kap -f app.yaml
+
+    .EXAMPLE
+    kap -k ./app
+
+    #>
+    k apply $args
+}
+
 function kd([string]$resource) {
     <#
     .SYNOPSIS
@@ -133,4 +170,8 @@ function kssh([string]$resource) {
     #>
 
     k exec --stdin --tty $resource -- /bin/bash
+}
+
+function kresource() {
+    kubectl api-resources --verbs=list -o name
 }
